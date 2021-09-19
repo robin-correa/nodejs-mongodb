@@ -43,7 +43,7 @@ async function getCourses() {
 
     // Logical
     .find()
-    .or([{ author: "Mosh" }, { isPublished: true }])
+    .or([{ author: "Author" }, { isPublished: true }])
     .and([{}, {}])
 
     // Starts with Robin
