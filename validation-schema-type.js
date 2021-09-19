@@ -1,0 +1,64 @@
+const mongoose = require("mongoose");
+
+mongoose
+  .connect("mongodb://localhost/mongo-practice")
+  .then(() => console.log("Connected to MongoDB..."))
+  .catch((err) => console.error("Could not connect to MongoDB...", err));
+
+const courseSchema = new mongoose.Schema({
+  name: { type: String, required: true, minlength: 5, maxlength: 255 },
+  category: {
+    type: String,
+    required: true,
+    enum: ["web", "mobile", "network"],
+    //lowercase: true, // convert the category to lowercase
+    //uppercase: true, // convert the category to uppercase
+    trim: true, // remove leading/trailing spaces
+  },
+  author: String,
+  tags: {
+    type: Array,
+    validate: {
+      isAsync: true,
+      validator: function (value) {
+        return value && value.length > 0;
+      },
+      message: "A course should have at least one tag.",
+    },
+  },
+  date: Date,
+  isPublished: Boolean,
+  price: {
+    type: Number,
+    required: function () {
+      return this.isPublished;
+    },
+    min: 10,
+    max: 200,
+    get: (value) => Math.round(value),
+    set: (value) => Math.round(value),
+  },
+});
+
+const Course = mongoose.model("Course", courseSchema);
+
+// Creating document
+async function createCourse() {
+  const course = new Course({
+    name: "Node.js Course",
+    category: "web",
+    author: "Robin",
+    tags: ["backend"],
+    isPublished: true,
+    price: 15.8,
+  });
+
+  try {
+    const result = await course.save();
+    console.log(result);
+  } catch (e) {
+    for (field in e.errors) console.log(e.errors[field].message);
+  }
+}
+
+createCourse();
