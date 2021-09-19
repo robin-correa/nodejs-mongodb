@@ -68,4 +68,4 @@ async function updateCourse(id) {
   console.log(result);
 }
 
-updateCourse("5a68fdf95db93f6477053ddd");
+updateCourse("5a68fdc3615eda645bc6bdec");
